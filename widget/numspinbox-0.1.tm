@@ -79,8 +79,15 @@ snit::widgetadaptor widget::numspinbox {
         bind Numspinbox <Up>   [list + after idle $win CheckRange]
         bind Numspinbox <Down> [list + after idle $win CheckRange]
 
-        bind Numspinbox <Control-End>  {%W set [format [%W cget -format] [%W cget -from]]}
-        bind Numspinbox <Control-Home> {%W set [format [%W cget -format] [%W cget -to]]}
+        bind Numspinbox <Control-End>  {
+            %W set [format [%W cget -format] [%W cget -to]]
+            event generate %W <<NumspinboxChanged>> -data [%W get]
+        }
+
+        bind Numspinbox <Control-Home> {
+            %W set [format [%W cget -format] [%W cget -from]]
+            event generate %W <<NumspinboxChanged>> -data [%W get]
+        }
 
         bind Numspinbox <Return> {
             if {[string is double -strict [%W get]] &&
@@ -233,6 +240,8 @@ snit::widgetadaptor widget::numspinbox {
     method NormalValue {} {
         $hull configure -bg [lindex [$hull configure -bg] 3]
         grab release $win
+        event generate $win <<NumspinboxChanged>> -data [$hull get]
+
     }
 
     delegate option * to hull; # except -width
