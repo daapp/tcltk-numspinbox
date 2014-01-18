@@ -241,14 +241,14 @@ snit::widgetadaptor widget::numspinbox {
         $hull configure -bg [lindex [$hull configure -bg] 3]
         grab release $win
         event generate $win <<NumspinboxChanged>> -data [$hull get]
-
     }
 
     delegate option * to hull; # except -width
     delegate method * to hull
 }
 
-if 0 {
+
+if {[info exists argv0] && [file tail [info script]] eq [file tail $argv0]} {
     set value -1000
 
     numspinbox .numeric -from -10 -to 10 -increment 0.241 -justify right -textvariable value
